@@ -1,7 +1,11 @@
-import React from "react";
+import React from 'react';
 
 const MS = () => {
-  return <div>MS</div>;
+  return (
+    <div>
+      <div className="">Hi~</div>
+    </div>
+  );
 };
 
 export default MS;
