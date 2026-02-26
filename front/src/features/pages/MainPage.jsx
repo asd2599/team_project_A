@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut, FiBox, FiCpu, FiCloud } from "react-icons/fi";
+import { FiLogOut, FiBox, FiCpu, FiCloud, FiMonitor } from "react-icons/fi";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const MainPage = () => {
       <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
       <div className="absolute bottom-[-20%] left-[20%] w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
 
-      <div className="bg-white/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-4xl z-10 border border-white/50">
+      <div className="bg-white/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-5xl z-10 border border-white/50">
         <div className="flex justify-between items-center mb-12 border-b pb-6">
           <div>
             <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">
@@ -35,7 +35,7 @@ const MainPage = () => {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div
             onClick={() => navigate("/dd")}
             className="group cursor-pointer bg-white border border-indigo-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
@@ -45,7 +45,7 @@ const MainPage = () => {
               <FiBox className="text-4xl" />
             </div>
             <h3 className="text-2xl font-bold text-slate-800 mb-2">DD 모듈</h3>
-            <p className="text-slate-500">
+            <p className="text-slate-500 text-sm">
               DD 기능 관리 및 설정을 진행할 수 있는 페이지입니다.
             </p>
           </div>
@@ -59,7 +59,7 @@ const MainPage = () => {
               <FiCpu className="text-4xl" />
             </div>
             <h3 className="text-2xl font-bold text-slate-800 mb-2">HB 모듈</h3>
-            <p className="text-slate-500">
+            <p className="text-slate-500 text-sm">
               HB 프로세스 제어 및 모니터링을 담당합니다.
             </p>
           </div>
@@ -73,8 +73,22 @@ const MainPage = () => {
               <FiCloud className="text-4xl" />
             </div>
             <h3 className="text-2xl font-bold text-slate-800 mb-2">MS 모듈</h3>
-            <p className="text-slate-500">
+            <p className="text-slate-500 text-sm">
               클라우드 동기화 및 MS 관련 작업을 수행합니다.
+            </p>
+          </div>
+
+          <div
+            onClick={() => navigate("/sh")}
+            className="group cursor-pointer bg-white border border-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div className="bg-purple-100 p-5 rounded-full mb-6 text-purple-600 group-hover:scale-110 transition-transform duration-300">
+              <FiMonitor className="text-4xl" />
+            </div>
+            <h3 className="text-2xl font-bold text-slate-800 mb-2">SH 모듈</h3>
+            <p className="text-slate-500 text-sm">
+              SH 대시보드 및 시스템 현황을 파악합니다.
             </p>
           </div>
         </div>

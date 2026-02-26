@@ -59,18 +59,22 @@ npm run dev
 
 ## [2. Python AI 모듈 폴더]
 
-### 초기 프로젝트 생성
+### 초기 프로젝트 생성 및 환경 설정
 
 ```bash
 # 루트 경로로 나와서, Python 서버용 폴더를 따로 팝니다.
 mkdir ai_module
 cd ai_module
+
+# uv를 사용하여 Python 프로젝트를 초기화합니다 (가상환경 자동 구성).
+uv init
 ```
 
 ### 권장 라이브러리 일괄 설치 명령어
 
 ```bash
-pip install fastapi uvicorn openai pydantic
+# pip install 대신 uv add를 사용하여 초고속으로 패키지를 설치합니다.
+uv add fastapi uvicorn openai pydantic
 ```
 
 ### 💡 API 모듈 핵심 설명
@@ -82,6 +86,6 @@ pip install fastapi uvicorn openai pydantic
 ### 서버 구동 명령어
 
 ```bash
-# 코드 작성이 main.py 라면 아래와 같이 터미널에 칩니다.
-uvicorn main:app --reload --port 8000
+# uv run 명령어를 통해 가상환경 내의 uvicorn을 실행합니다. (메인 파일이 main.py 라면)
+uv run uvicorn main:app --reload --port 8000
 ```
