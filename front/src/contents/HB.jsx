@@ -1,7 +1,11 @@
 import React from "react";
 
 const HB = () => {
-  return <div>HB</div>;
+  return (
+    <div>
+      <div>Hello</div>
+    </div>
+  );
 };
 
 export default HB;
