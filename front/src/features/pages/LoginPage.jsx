@@ -34,7 +34,7 @@ const LoginPage = () => {
           </div>
         </div>
         <h2 className="text-3xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-cyan-500">
-          환영합니다 👋
+          환영합니다
         </h2>
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           <div className="relative">
