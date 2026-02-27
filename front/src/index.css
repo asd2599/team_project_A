@@ -1,5 +1,4 @@
-<<<<<<<<< Temporary merge branch 1 @import "tailwindcss";
-=========@import "tailwindcss";
+@import "tailwindcss";
 
 @layer utilities {
   .animate-blob {

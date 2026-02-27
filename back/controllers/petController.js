@@ -69,7 +69,31 @@ const createPet = async (req, res) => {
   }
 };
 
+// 상위 10개 펫 랭킹 조회
+const getRanking = async (req, res) => {
+  try {
+    const query = `
+      SELECT id, name, color, level, exp, user_id
+      FROM pets
+      ORDER BY level DESC, exp DESC
+      LIMIT 10
+    `;
+    const result = await pool.query(query);
+
+    return res.status(200).json({
+      ranking: result.rows,
+      message: "랭킹 조회 성공",
+    });
+  } catch (error) {
+    console.error("getRanking error:", error);
+    return res
+      .status(500)
+      .json({ message: "랭킹을 불러오는 중 오류가 발생했습니다." });
+  }
+};
+
 module.exports = {
   getMyPet,
   createPet,
+  getRanking,
 };
