@@ -9,6 +9,7 @@ import {
   FiMonitor,
   FiSmile,
   FiAward,
+  FiMessageCircle,
 } from "react-icons/fi";
 
 const RankingPage = () => {
@@ -110,10 +111,10 @@ const RankingPage = () => {
               <FiBox className="text-xl" /> DD 모듈
             </button>
             <button
-              onClick={() => navigate("/hb")}
+              onClick={() => navigate("/chat")}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 transition-colors font-medium"
             >
-              <FiCpu className="text-xl" /> HB 모듈
+              <FiMessageCircle className="text-xl" /> 대화하기 (Chat)
             </button>
             <button
               onClick={() => navigate("/ms")}

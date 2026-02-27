@@ -12,4 +12,7 @@ router.get("/api/pets/ranking", authenticateToken, petController.getRanking);
 // 펫 생성
 router.post("/api/pets", authenticateToken, petController.createPet);
 
+// 펫 채팅
+router.post("/api/pets/chat", authenticateToken, petController.chatWithPet);
+
 module.exports = router;
