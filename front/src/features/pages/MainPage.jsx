@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   FiLogOut,
   FiBox,
@@ -8,8 +8,8 @@ import {
   FiCloud,
   FiMonitor,
   FiSmile,
-} from "react-icons/fi";
-import Pet from "../pets/pet";
+} from 'react-icons/fi';
+import Pet from '../pets/pet';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -19,13 +19,13 @@ const MainPage = () => {
   useEffect(() => {
     const fetchPetData = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem('token');
         if (!token) {
-          navigate("/");
+          navigate('/');
           return;
         }
 
-        const response = await axios.get("http://localhost:8000/api/pets/my", {
+        const response = await axios.get('http://localhost:8000/api/pets/my', {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -34,24 +34,37 @@ const MainPage = () => {
           setPetData(loadedPet);
         } else {
           // 펫이 없으면 강제로 생성페이지 이동
-          navigate("/create-pet");
+          navigate('/create-pet');
         }
       } catch (error) {
-        console.error("펫 정보를 불러오는 중 에러 발생:", error);
-        alert("세션이 만료되었거나 펫 정보를 가져올 수 없습니다.");
-        localStorage.removeItem("token");
-        navigate("/");
+        console.error('펫 정보를 불러오는 중 에러 발생:', error);
+        alert('세션이 만료되었거나 펫 정보를 가져올 수 없습니다.');
+        localStorage.removeItem('token');
+        navigate('/');
       } finally {
         setLoading(false);
       }
     };
 
     fetchPetData();
+
+    // 다른 브라우저 탭(MS 등)에서 발생한 동작을 실시간으로 메인 페이지에 반영
+    const channel = new BroadcastChannel('pet_update_channel');
+    channel.onmessage = (event) => {
+      if (event.data?.type === 'UPDATE_PET' && event.data?.pet) {
+        // 이미 가져온 클래스가 있다면 새 데이터로 덮어씌워 렌더링
+        setPetData(new Pet(event.data.pet));
+      }
+    };
+
+    return () => {
+      channel.close();
+    };
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+    localStorage.removeItem('token');
+    navigate('/');
   };
 
   if (loading) {
@@ -78,31 +91,31 @@ const MainPage = () => {
           </h2>
           <nav className="flex flex-col gap-4">
             <button
-              onClick={() => navigate("/main")}
+              onClick={() => navigate('/main')}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors font-bold shadow-sm"
             >
               <FiSmile className="text-xl" /> 내 펫 상태 (Main)
             </button>
             <button
-              onClick={() => navigate("/dd")}
+              onClick={() => navigate('/dd')}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition-colors font-medium"
             >
               <FiBox className="text-xl" /> DD 모듈
             </button>
             <button
-              onClick={() => navigate("/hb")}
+              onClick={() => navigate('/hb')}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 transition-colors font-medium"
             >
               <FiCpu className="text-xl" /> HB 모듈
             </button>
             <button
-              onClick={() => navigate("/ms")}
+              onClick={() => navigate('/ms')}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-cyan-50 text-slate-700 hover:text-cyan-600 transition-colors font-medium"
             >
               <FiCloud className="text-xl" /> MS 모듈
             </button>
             <button
-              onClick={() => navigate("/sh")}
+              onClick={() => navigate('/sh')}
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-purple-50 text-slate-700 hover:text-purple-600 transition-colors font-medium"
             >
               <FiMonitor className="text-xl" /> SH 모듈
