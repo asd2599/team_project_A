@@ -11,6 +11,9 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // ✅ 로그인 시도 시 기존 토큰 완전 삭제
+      localStorage.removeItem("token");
+
       const response = await axios.post("http://localhost:8000/login", {
         email,
         password,
@@ -18,7 +21,13 @@ const LoginPage = () => {
       const data = response.data;
       if (data.token) {
         localStorage.setItem("token", data.token);
-        navigate("/main");
+
+        // 펫 검증: users 테이블의 pet_id 가 0 이면 펫 없음, 그 외에는 펫 존재
+        if (data.petId === 0 || !data.petId) {
+          navigate("/create-pet");
+        } else {
+          navigate("/main");
+        }
       }
     } catch (error) {
       alert(error.response?.data?.message || "로그인 중 오류가 발생했습니다.");
