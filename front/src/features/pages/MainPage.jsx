@@ -1,98 +1,216 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiLogOut, FiBox, FiCpu, FiCloud, FiMonitor } from "react-icons/fi";
+import axios from "axios";
+import {
+  FiLogOut,
+  FiBox,
+  FiCpu,
+  FiCloud,
+  FiMonitor,
+  FiSmile,
+} from "react-icons/fi";
+import Pet from "../pets/pet";
 
 const MainPage = () => {
   const navigate = useNavigate();
+  const [petData, setPetData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPetData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          navigate("/");
+          return;
+        }
+
+        const response = await axios.get("http://localhost:8000/api/pets/my", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.data.pet) {
+          const loadedPet = new Pet(response.data.pet);
+          setPetData(loadedPet);
+        } else {
+          // 펫이 없으면 강제로 생성페이지 이동
+          navigate("/create-pet");
+        }
+      } catch (error) {
+        console.error("펫 정보를 불러오는 중 에러 발생:", error);
+        alert("세션이 만료되었거나 펫 정보를 가져올 수 없습니다.");
+        localStorage.removeItem("token");
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPetData();
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-6 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-      <div className="absolute top-[20%] right-[-10%] w-72 h-72 bg-emerald-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-[-20%] left-[20%] w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-slate-50 text-slate-500">
+        <p className="text-xl font-bold animate-pulse">
+          펫 정보를 불러오는 중...
+        </p>
+      </div>
+    );
+  }
 
-      <div className="bg-white/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-5xl z-10 border border-white/50">
-        <div className="flex justify-between items-center mb-12 border-b pb-6">
-          <div>
-            <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500">
-              대시보드
-            </h1>
-            <p className="text-slate-500 mt-2 text-lg">
-              환영합니다! 이용하실 서비스를 선택해 주세요.
-            </p>
-          </div>
+  return (
+    <div className="flex h-screen bg-slate-50 overflow-hidden relative">
+      {/* Background decoration */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob pointer-events-none"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
+
+      {/* 왼쪽 네비게이션 사이드바 */}
+      <aside className="w-64 bg-white/80 backdrop-blur-md border-r border-indigo-50 flex-col justify-between shadow-xl z-10 hidden md:flex">
+        <div className="p-8">
+          <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-cyan-500 mb-8">
+            DASHBOARD
+          </h2>
+          <nav className="flex flex-col gap-4">
+            <button
+              onClick={() => navigate("/main")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors font-bold shadow-sm"
+            >
+              <FiSmile className="text-xl" /> 내 펫 상태 (Main)
+            </button>
+            <button
+              onClick={() => navigate("/dd")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition-colors font-medium"
+            >
+              <FiBox className="text-xl" /> DD 모듈
+            </button>
+            <button
+              onClick={() => navigate("/hb")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 transition-colors font-medium"
+            >
+              <FiCpu className="text-xl" /> HB 모듈
+            </button>
+            <button
+              onClick={() => navigate("/ms")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-cyan-50 text-slate-700 hover:text-cyan-600 transition-colors font-medium"
+            >
+              <FiCloud className="text-xl" /> MS 모듈
+            </button>
+            <button
+              onClick={() => navigate("/sh")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-purple-50 text-slate-700 hover:text-purple-600 transition-colors font-medium"
+            >
+              <FiMonitor className="text-xl" /> SH 모듈
+            </button>
+          </nav>
+        </div>
+        <div className="p-8 border-t border-slate-100">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-colors font-medium"
+            className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-colors font-medium"
           >
             <FiLogOut /> 로그아웃
           </button>
         </div>
+      </aside>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div
-            onClick={() => navigate("/dd")}
-            className="group cursor-pointer bg-white border border-indigo-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="bg-indigo-100 p-5 rounded-full mb-6 text-indigo-600 group-hover:scale-110 transition-transform duration-300">
-              <FiBox className="text-4xl" />
+      {/* 중앙 메인 콘텐츠 (펫 정보 렌더링) */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 z-10 overflow-y-auto">
+        <div className="bg-white/80 backdrop-blur-xl p-10 rounded-3xl shadow-2xl w-full max-w-4xl border border-white/50 flex flex-col md:flex-row items-center gap-12">
+          {/* 펫 렌더링 영역 */}
+          <div className="flex-1 flex flex-col items-center">
+            <div className="w-64 h-64 bg-slate-100 rounded-full flex justify-center items-center mb-6 relative border-4 border-white shadow-lg">
+              {petData && (
+                <img
+                  src={petData.getImagePath()}
+                  alt={petData.name}
+                  className="w-48 h-48 object-contain hover:scale-110 transition-transform duration-300 drop-shadow-xl"
+                />
+              )}
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">DD 모듈</h3>
-            <p className="text-slate-500 text-sm">
-              DD 기능 관리 및 설정을 진행할 수 있는 페이지입니다.
+            <h1 className="text-4xl font-extrabold text-slate-800 mb-2">
+              {petData?.name}
+            </h1>
+            <p className="text-indigo-500 font-semibold bg-indigo-50 px-4 py-1 rounded-full text-lg mb-4">
+              Lv. {petData?.level}
+            </p>
+            {/* 경험치 바 */}
+            <div className="w-full max-w-xs bg-gray-200 rounded-full h-4 mb-1">
+              <div
+                className="bg-indigo-500 h-4 rounded-full transition-all duration-500"
+                style={{
+                  width: `${Math.min((petData?.exp / petData?.getMaxExp()) * 100, 100)}%`,
+                }}
+              ></div>
+            </div>
+            <p className="text-xs text-slate-400">
+              EXP {petData?.exp} / {petData?.getMaxExp()}
             </p>
           </div>
 
-          <div
-            onClick={() => navigate("/hb")}
-            className="group cursor-pointer bg-white border border-emerald-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="bg-emerald-100 p-5 rounded-full mb-6 text-emerald-600 group-hover:scale-110 transition-transform duration-300">
-              <FiCpu className="text-4xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">HB 모듈</h3>
-            <p className="text-slate-500 text-sm">
-              HB 프로세스 제어 및 모니터링을 담당합니다.
-            </p>
-          </div>
+          {/* 펫 스탯 텍스트 출력 영역 */}
+          <div className="flex-1 w-full flex flex-col gap-6">
+            <h3 className="text-xl font-bold border-b pb-2 text-slate-700">
+              능력치 세부 정보
+            </h3>
 
-          <div
-            onClick={() => navigate("/ms")}
-            className="group cursor-pointer bg-white border border-cyan-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="bg-cyan-100 p-5 rounded-full mb-6 text-cyan-600 group-hover:scale-110 transition-transform duration-300">
-              <FiCloud className="text-4xl" />
-            </div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">MS 모듈</h3>
-            <p className="text-slate-500 text-sm">
-              클라우드 동기화 및 MS 관련 작업을 수행합니다.
-            </p>
-          </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-100">
+                <p className="text-emerald-700 text-sm font-semibold mb-1">
+                  생존 스탯
+                </p>
+                <p className="text-slate-600 font-medium">
+                  체력: {petData?.healthHp}/100
+                </p>
+                <p className="text-slate-600 font-medium">
+                  배고픔: {petData?.hunger}/100
+                </p>
+                <p className="text-slate-600 font-medium">
+                  청결도: {petData?.cleanliness}/100
+                </p>
+                <p className="text-slate-600 font-medium">
+                  스트레스: {petData?.stress}/100
+                </p>
+              </div>
 
-          <div
-            onClick={() => navigate("/sh")}
-            className="group cursor-pointer bg-white border border-purple-100 p-8 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="bg-purple-100 p-5 rounded-full mb-6 text-purple-600 group-hover:scale-110 transition-transform duration-300">
-              <FiMonitor className="text-4xl" />
+              <div className="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                <p className="text-purple-700 text-sm font-semibold mb-1">
+                  감정 및 지능
+                </p>
+                <p className="text-slate-600 font-medium">
+                  지식: {petData?.knowledge}
+                </p>
+                <p className="text-slate-600 font-medium">
+                  애정: {petData?.affection}
+                </p>
+                <p className="text-slate-600 font-medium">
+                  공감력: {petData?.empathy}
+                </p>
+                <p className="text-slate-600 font-medium">
+                  논리력: {petData?.logic}
+                </p>
+                <p className="text-slate-600 font-medium">
+                  이타심: {petData?.altruism}
+                </p>
+              </div>
             </div>
-            <h3 className="text-2xl font-bold text-slate-800 mb-2">SH 모듈</h3>
-            <p className="text-slate-500 text-sm">
-              SH 대시보드 및 시스템 현황을 파악합니다.
-            </p>
+
+            <div className="bg-orange-50 p-4 rounded-xl border border-orange-100 mt-2">
+              <p className="text-orange-700 font-semibold mb-1">
+                현재 성향 (Tendency)
+              </p>
+              <p className="text-slate-700 font-bold text-lg uppercase">
+                {petData?.tendency}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
