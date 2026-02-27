@@ -72,7 +72,11 @@ exports.login = async (req, res) => {
       { expiresIn: "1h" },
     );
 
-    res.status(200).json({ message: "로그인 성공!", token });
+    res.status(200).json({
+      message: "로그인 성공!",
+      token,
+      petId: user.rows[0].pet_id,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "서버 오류가 발생했습니다." });

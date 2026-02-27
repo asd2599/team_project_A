@@ -14,6 +14,9 @@ app.get("/", (req, res) => {
 const userRoutes = require("./routes/userRoutes");
 app.use(userRoutes);
 
+const petRoutes = require("./routes/petRoutes");
+app.use(petRoutes);
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 서버가 포트 ${PORT}에서 작동 중입니다.`);
