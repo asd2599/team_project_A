@@ -24,7 +24,7 @@ const ChatPage = () => {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
   // 펫 정보 불러오기
   useEffect(() => {
@@ -61,7 +61,12 @@ const ChatPage = () => {
 
   // 스크롤 자동 내리기
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
   }, [messages, isTyping]);
 
   const handleLogout = () => {
@@ -182,7 +187,7 @@ const ChatPage = () => {
       </aside>
 
       {/* 중앙 메인 콘텐츠 (채팅 영역) */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 z-10">
+      <main className="flex-1 flex flex-col items-center justify-center p-6 z-10 min-h-0 overflow-hidden">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-4xl h-full border border-white/50 flex flex-col md:flex-row overflow-hidden">
           {/* 좌측 펫 상태 프로필 */}
           <div className="w-full md:w-1/3 bg-slate-50/50 border-r border-slate-100 flex flex-col items-center p-8">
@@ -233,28 +238,30 @@ const ChatPage = () => {
           </div>
 
           {/* 우측 채팅 영역 */}
-          <div className="flex-1 flex flex-col bg-white">
-            {/* 채팅 헤더 */}
-            <div className="p-5 border-b border-slate-100 bg-white/50 backdrop-blur-md">
+          <div className="flex-1 flex flex-col bg-white h-full overflow-hidden">
+            {/* 채팅 헤더 (고정) */}
+            <div className="p-5 border-b border-slate-100 bg-white/50 backdrop-blur-md shrink-0">
               <h2 className="text-lg font-bold text-slate-700 flex items-center gap-2">
                 <FiMessageCircle className="text-indigo-500" />
                 {petData?.name}와(과) 대화중...
               </h2>
             </div>
 
-            {/* 메시지 리스트 */}
-            <div className="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-slate-50/30">
+            {/* 메시지 리스트 (스크롤되는 영역) */}
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-slate-50/30 min-h-0"
+            >
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-sm border ${
-                      msg.sender === "user"
-                        ? "bg-indigo-500 text-white rounded-tr-sm border-indigo-600"
-                        : "bg-white text-slate-700 rounded-tl-sm border-slate-200"
-                    }`}
+                    className={`max-w-[70%] px-5 py-3 rounded-2xl shadow-sm border ${msg.sender === "user"
+                      ? "bg-indigo-500 text-white rounded-tr-sm border-indigo-600"
+                      : "bg-white text-slate-700 rounded-tl-sm border-slate-200"
+                      }`}
                   >
                     <p className="text-[15px] leading-relaxed wrap-break-word">
                       {msg.text}
@@ -278,26 +285,25 @@ const ChatPage = () => {
                   </div>
                 </div>
               )}
-              <div ref={chatEndRef} />
             </div>
 
-            {/* 채팅 입력 폼 */}
+            {/* 채팅 입력 폼 (하단 고정) */}
             <form
               onSubmit={handleSendMessage}
-              className="p-4 bg-white border-t border-slate-100 flex gap-2"
+              className="p-4 bg-white border-t border-slate-100 flex gap-2 shrink-0"
             >
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={`${petData?.name}에게 하고 싶은 말을 적어보세요...`}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-400"
+                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-[15px] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-400"
                 disabled={isTyping}
               />
               <button
                 type="submit"
                 disabled={isTyping || !inputValue.trim()}
-                className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-300 text-white p-3 rounded-xl transition-colors shadow-md flex justify-center items-center"
+                className="bg-indigo-500 hover:bg-indigo-600 disabled:bg-indigo-300 text-white px-5 rounded-xl transition-colors shadow-md flex justify-center items-center"
               >
                 <FiSend className="text-xl" />
               </button>
