@@ -8,6 +8,7 @@ import {
   FiCloud,
   FiMonitor,
   FiSmile,
+  FiAward,
 } from "react-icons/fi";
 import Pet from "../pets/pet";
 import PetStatusPage from "./PetStatusPage";
@@ -83,6 +84,12 @@ const MainPage = () => {
               className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors font-bold shadow-sm"
             >
               <FiSmile className="text-xl" /> 내 펫 상태 (Main)
+            </button>
+            <button
+              onClick={() => navigate("/ranking")}
+              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition-colors font-medium"
+            >
+              <FiAward className="text-xl" /> 명예의 전당 (랭킹)
             </button>
             <button
               onClick={() => navigate("/dd")}
