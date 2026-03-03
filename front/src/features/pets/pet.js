@@ -24,6 +24,14 @@ export default class Pet {
     this.altruism = data.altruism ?? 0;
     this.logic = data.logic ?? 0;
     this.empathy = data.empathy ?? 0;
+
+    // 신규 감정 및 성향 지수
+    this.extroversion = data.extroversion ?? 0;
+    this.humor = data.humor ?? 0;
+    this.openness = data.openness ?? 0;
+    this.directness = data.directness ?? 0;
+    this.curiosity = data.curiosity ?? 0;
+
     this.tendency = data.tendency || "neutral";
 
     // 메타 데이터
