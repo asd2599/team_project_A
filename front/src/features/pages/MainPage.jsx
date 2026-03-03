@@ -87,56 +87,42 @@ const MainPage = () => {
       <div className="absolute bottom-[-20%] right-[-10%] w-80 h-80 bg-cyan-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000 pointer-events-none"></div>
 
       {/* 왼쪽 네비게이션 사이드바 */}
-      <aside className="w-64 bg-white/80 backdrop-blur-md border-r border-indigo-50 flex-col justify-between shadow-xl z-10 hidden md:flex">
-        <div className="p-8">
-          <h2 className="text-2xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-cyan-500 mb-8">
-            DASHBOARD
-          </h2>
-          <nav className="flex flex-col gap-4">
-            <button
-              onClick={() => navigate('/main')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl bg-orange-50 hover:bg-orange-100 text-orange-600 transition-colors font-bold shadow-sm"
-            >
-              <FiSmile className="text-xl" /> 내 펫 상태 (Main)
-            </button>
-            <button
-              onClick={() => navigate('/ranking')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition-colors font-medium"
-            >
-              <FiAward className="text-xl" /> 명예의 전당 (랭킹)
-            </button>
-            <button
-              onClick={() => navigate('/dd')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 transition-colors font-medium"
-            >
-              <FiBox className="text-xl" /> DD 모듈
-            </button>
-            <button
-              onClick={() => navigate('/chat')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-emerald-50 text-slate-700 hover:text-emerald-600 transition-colors font-medium"
-            >
-              <FiMessageCircle className="text-xl" /> 대화하기 (Chat)
-            </button>
-            <button
-              onClick={() => navigate('/ms')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-cyan-50 text-slate-700 hover:text-cyan-600 transition-colors font-medium"
-            >
-              <FiCloud className="text-xl" /> MS 모듈
-            </button>
-            <button
-              onClick={() => navigate('/sh')}
-              className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl hover:bg-purple-50 text-slate-700 hover:text-purple-600 transition-colors font-medium"
-            >
-              <FiMonitor className="text-xl" /> SH 모듈
-            </button>
+      <aside className="w-20 lg:w-64 border-r border-gray-50 dark:border-gray-900 flex flex-col justify-between bg-white dark:bg-[#0b0f1a] z-40">
+        <div className="p-8 lg:p-10">
+          <h2 className="hidden lg:block text-sm font-black text-gray-900 dark:text-white mb-12 tracking-[0.3em] text-center uppercase">Dashboard</h2>
+          <nav className="flex flex-col gap-3">
+            {[
+              { icon: FiSmile, label: "내 펫 상태", path: "/main", active: true },
+              { icon: FiAward, label: "명예의 전당", path: "/ranking" },
+              { icon: FiMessageCircle, label: "대화하기", path: "/chat" },
+              { icon: FiBox, label: "DD 모듈", path: "/dd" },
+              { icon: FiCloud, label: "MS 모듈", path: "/ms" },
+              { icon: FiMonitor, label: "SH 모듈", path: "/sh" },
+            ].map((item) => (
+              <button
+                key={item.label}
+                onClick={() => navigate(item.path)}
+                className={`flex items-center gap-4 p-3 lg:px-5 lg:py-3.5 rounded-2xl transition-all ${
+                  item.active 
+                    ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-xl shadow-gray-200 dark:shadow-none" 
+                    : "text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900"
+                }`}
+              >
+                <item.icon className="text-xl" />
+                <span className="hidden lg:block text-[13px] font-bold">{item.label}</span>
+              </button>
+            ))}
           </nav>
         </div>
-        <div className="p-8 border-t border-slate-100">
-          <button
-            onClick={handleLogout}
-            className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-colors font-medium"
+
+        {/* 로그아웃 섹션 */}
+        <div className="p-8 lg:p-10 border-t border-gray-50 dark:border-gray-900">
+          <button 
+            onClick={handleLogout} 
+            className="flex items-center justify-center lg:justify-center gap-3 w-full text-[12px] font-bold text-gray-400 hover:text-red-500 transition-colors uppercase tracking-widest group"
           >
-            <FiLogOut /> 로그아웃
+            <FiLogOut className="text-lg group-hover:scale-110 transition-transform" /> 
+            <span className="hidden lg:block">Sign Out</span>
           </button>
         </div>
       </aside>
