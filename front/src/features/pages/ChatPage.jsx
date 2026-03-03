@@ -26,6 +26,9 @@ const ChatPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef(null);
 
+  // AI 성향 분석 상태
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+
   // 펫 정보 불러오기
   useEffect(() => {
     const fetchPetData = async () => {
@@ -69,6 +72,36 @@ const ChatPage = () => {
     navigate("/");
   };
 
+  const handleAnalyzeTendency = async () => {
+    try {
+      setAnalysisLoading(true);
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "http://localhost:8000/api/pets/analyze-tendency",
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      if (response.data.pet) {
+        setPetData(new Pet(response.data.pet));
+        // 시스템 메시지로 분석 결과 알림
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "pet",
+            text: `(시스템) AI 성향 분석 완료!\n현재 성향: ${response.data.pet.tendency}\n이유: ${response.data.reason}`,
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error("성향 분석 에러:", error);
+      alert("AI 성향 분석 중 오류가 발생했습니다.");
+    } finally {
+      setAnalysisLoading(false);
+    }
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputValue.trim()) return;
@@ -89,7 +122,11 @@ const ChatPage = () => {
       // 봇(펫) 응답 추가
       setMessages((prev) => [
         ...prev,
-        { sender: "pet", text: response.data.reply },
+        {
+          sender: "pet",
+          text: response.data.reply,
+          analysis: response.data.analysis,
+        },
       ]);
 
       // 혹시 경험치/레벨업 정보가 오면 펫 데이터 갱신
@@ -204,7 +241,7 @@ const ChatPage = () => {
             </p>
 
             {/* 펫 현재 스탯 간략히 보여주기  */}
-            <div className="w-full bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-sm">
+            <div className="w-full bg-white p-4 rounded-xl shadow-sm border border-slate-100 text-sm mb-4">
               <div className="flex justify-between mb-2">
                 <span className="text-slate-500 font-medium">레벨</span>
                 <span className="text-slate-700 font-bold">
@@ -223,13 +260,83 @@ const ChatPage = () => {
                   {petData?.affection} ❤️
                 </span>
               </div>
-              <div className="flex justify-between">
+              <div className="flex justify-between mb-2">
                 <span className="text-slate-500 font-medium">지식</span>
                 <span className="text-blue-500 font-bold">
                   {petData?.knowledge} 🧠
                 </span>
               </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">공감</span>
+                <span className="text-emerald-500 font-bold">
+                  {petData?.empathy} 🤝
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">논리</span>
+                <span className="text-indigo-500 font-bold">
+                  {petData?.logic} 💡
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">이타성</span>
+                <span className="text-amber-500 font-bold">
+                  {petData?.altruism} 🤲
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">외향성</span>
+                <span className="text-orange-500 font-bold">
+                  {petData?.extroversion} 🌟
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">유머</span>
+                <span className="text-yellow-500 font-bold">
+                  {petData?.humor} 😂
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">개방성</span>
+                <span className="text-teal-500 font-bold">
+                  {petData?.openness} 👐
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-slate-500 font-medium">직설성</span>
+                <span className="text-red-500 font-bold">
+                  {petData?.directness} ⚡
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-slate-500 font-medium">호기심</span>
+                <span className="text-cyan-500 font-bold">
+                  {petData?.curiosity} 🔍
+                </span>
+              </div>
             </div>
+
+            {/* AI 성향 분석 버튼 */}
+            <button
+              onClick={handleAnalyzeTendency}
+              disabled={analysisLoading}
+              className={`w-full py-3 px-4 rounded-xl font-bold text-white transition-all shadow-md mt-auto flex items-center justify-center gap-2 ${
+                analysisLoading
+                  ? "bg-indigo-300 cursor-not-allowed"
+                  : "bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 hover:shadow-lg transform hover:-translate-y-0.5"
+              }`}
+            >
+              {analysisLoading ? (
+                <>
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin"></span>
+                  분석 중...
+                </>
+              ) : (
+                <>
+                  <FiAward className="text-lg" /> AI 성향 확립
+                </>
+              )}
+            </button>
           </div>
 
           {/* 우측 채팅 영역 */}
@@ -256,9 +363,47 @@ const ChatPage = () => {
                         : "bg-white text-slate-700 rounded-tl-sm border-slate-200"
                     }`}
                   >
-                    <p className="text-[15px] leading-relaxed wrap-break-word">
+                    <p className="text-[15px] leading-relaxed wrap-break-word whitespace-pre-line">
                       {msg.text}
                     </p>
+
+                    {/* 분석된 스탯 렌더링 */}
+                    {msg.sender === "pet" && msg.analysis && (
+                      <div className="mt-3 pt-3 border-t border-slate-200/50 flex flex-wrap gap-2 text-xs font-semibold">
+                        {Object.entries(msg.analysis).map(([key, value]) => {
+                          if (!value || value === 0) return null;
+                          const isPositive = value > 0;
+
+                          // 스탯 이름 한글 매핑 (옵션)
+                          const statNames = {
+                            empathy: "공감",
+                            logic: "논리",
+                            knowledge: "지식",
+                            affection: "애정도",
+                            altruism: "이타성",
+                            extroversion: "외향성",
+                            humor: "유머",
+                            openness: "개방성",
+                            directness: "직설성",
+                            curiosity: "호기심",
+                          };
+                          const displayName = statNames[key] || key;
+
+                          return (
+                            <span
+                              key={key}
+                              className={`px-2 py-1 flex items-center gap-1 rounded-full ${
+                                isPositive
+                                  ? "bg-emerald-100/80 text-emerald-700"
+                                  : "bg-rose-100/80 text-rose-700"
+                              }`}
+                            >
+                              {displayName} {isPositive ? `+${value}` : value}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
