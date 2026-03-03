@@ -12,9 +12,9 @@ const LoginPage = () => {
   // 초기 테마 설정 확인 및 적용 (회원가입 페이지와 동일한 로직)
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const isDark = savedTheme === "dark" || 
+    const isDark = savedTheme === "dark" ||
       (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    
+
     if (isDark) {
       document.documentElement.classList.add("dark");
       setIsDarkMode(true);
@@ -79,11 +79,13 @@ const LoginPage = () => {
           <h2 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">환영합니다!</h2>
           <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5">서비스 이용을 위해 로그인해 주세요</p>
         </div>
-
-        <form onSubmit={handleLogin} className="flex flex-col gap-3">
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-              <FiMail className="text-gray-400 dark:text-gray-600 text-xs transition-colors" />
+        <h2 className="text-3xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-cyan-500">
+          환영합니다 👋
+        </h2>
+        <form onSubmit={handleLogin} className="flex flex-col gap-5">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <FiMail className="text-gray-400" />
             </div>
             <input
               type="email"
