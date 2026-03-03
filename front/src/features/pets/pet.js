@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * Pet 클래스
  * - DB에서 가져온 펫 데이터를 객체화하여 관리합니다.
@@ -40,11 +42,35 @@ export default class Pet {
   }
 
   /**
-   * 펫의 색상을 기반으로 출력할 기본 이미지 경로를 반환합니다.
-   * 지원 색상: blue, green, pink, purple, red, yellow
+   * 펫의 색상을 기반으로 출력할 기본 이미지 경로를 반환합니다. (추후 호환성용 유지)
    */
   getImagePath() {
     return `/images/shapes/${this.color}_body_circle.png`;
+  }
+
+  /**
+   * 펫의 레이어(Body, Face)를 조합한 React 컴포넌트(요소)를 반환합니다.
+   * - 우선 얼굴표정만(face_neutral) 오버레이하여 반영합니다. (손은 이번에 제외)
+   */
+  draw(className = "") {
+    const body = `/images/shapes/${this.color}_body_circle.png`;
+    const faceType = "neutral";
+    const face = `/images/faces/face_${faceType}.png`;
+
+    return React.createElement(
+      "div",
+      { className: `relative ${className}` },
+      React.createElement("img", {
+        src: body,
+        alt: "pet-body",
+        className: "absolute inset-0 w-full h-full object-contain z-0",
+      }),
+      React.createElement("img", {
+        src: face,
+        alt: "pet-face",
+        className: "absolute inset-0 w-full h-full object-contain z-10",
+      }),
+    );
   }
 
   /**
