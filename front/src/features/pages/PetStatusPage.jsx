@@ -97,8 +97,8 @@ const PetStatusPage = ({ petData }) => {
               <span className="text-[11px] font-bold text-gray-900 dark:text-gray-100">{petData?.tendency}</span>
             </div>
 
-            {/* ✅ 신규 상호작용 메뉴 (성향 아래 가로 한 줄 배치) */}
-            <div className="grid grid-cols-3 gap-2 mt-2">
+            {/* 상호작용 메뉴 (성향 아래 가로 한 줄 배치) */}
+            <div className="grid grid-cols-4 gap-2 mt-2">
               <button className="flex flex-col items-center py-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 group">
                 <FiCoffee className="text-[14px] text-gray-400 group-hover:text-indigo-500 mb-1" />
                 <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">먹기</span>
@@ -107,13 +107,21 @@ const PetStatusPage = ({ petData }) => {
                 <FiHeartFill className="text-[14px] text-gray-400 group-hover:text-rose-500 mb-1" />
                 <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">교감</span>
               </button>
-              {/* ✅ 대화 버튼: 클릭 시 /chat 페이지로 이동 */}
+              {/* 대화 버튼: 클릭 시 /chat 페이지로 이동 */}
               <button 
                 onClick={() => navigate("/chat")}
                 className="flex flex-col items-center py-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 group"
               >
                 <FiMessageCircle className="text-[14px] text-gray-400 group-hover:text-cyan-500 mb-1" />
                 <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">대화</span>
+              </button>
+              {/* 랭킹 버튼: 클릭 시 /ranking 페이지로 이동 */}
+              <button 
+                onClick={() => navigate("/ranking")}
+                className="flex flex-col items-center py-2.5 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95 group"
+              >
+                <FiAward className="text-[14px] text-gray-400 group-hover:text-amber-500 mb-1" />
+                <span className="text-[9px] font-bold text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-gray-100">랭킹</span>
               </button>
             </div>
 
